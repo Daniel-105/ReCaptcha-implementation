@@ -1,0 +1,83 @@
+﻿@using Microsoft.Extensions.Configuration
+@model ContactFormModel
+
+@* We get the GoogleReCaptcha from appsettings *@
+@inject IConfiguration _conf
+
+@{
+    ViewData["Title"] = "Home Page";
+    // Call the SiteKey inn appsettings
+    var key = _conf["GoogleReCaptcha:SiteKey"];
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+
+<header>
+    <h1>Responsive Form Example</h1>
+    <small>
+        <p>
+            This example demonstrates how to create a simple form layout that can responsively expand and
+            stack depending on the width of the page.
+        </p>
+        <p>&nbsp;</p>
+    </small>
+</header>
+
+
+<form method="post" class="main-content" asp-controller="Home" asp-action="Form">
+    <input type="hidden" id="captchaToken" asp-for="Token" />
+    <div class="form-group">
+        <label>Nome</label>
+        <input id="Name" type="text" class="form-control" asp-for="Name" />
+    </div>
+
+    <div class="form-group">
+        <label>Email</label>
+        <input id="Email" type="email" class="form-control" asp-for="Email" />
+    </div>
+
+    <div class="form-group">
+        <label>Telefone</label>
+        <input id="Telefone" type="text" class="form-control" asp-for="Telefone" />
+    </div>
+
+    <div class="form-group">
+        <label>Mensagem</label>
+        <textarea id="Mensagem" class="form-control" asp-for="Mensagem" /></textarea>
+    </div>
+
+    <div class="form-group">
+        <button type="submit">Save</button>
+        <button>Cancel</button>
+    </div>
+
+</form>
+
+<script src="https://www.google.com/recaptcha/api.js?render=@key"></script>
+<script>
+
+    setInterval(getToken, 115000);
+        document.addEventListener("DOMContentLoaded", () => {
+        getToken()
+    })
+
+    document.querySelector("#Name").value = "Daniel";
+    document.querySelector("#Email").value = "Daniel@gmail.com";
+    document.querySelector("#Telefone").value = "12312321";
+    document.querySelector("#Mensagem").value = "Daniasdasdael";
+
+    function getToken() {
+        grecaptcha.ready(function () {
+            grecaptcha.execute('@key', { action: 'submit' }).then(function (token) {
+                // Add your logic to submit to your backend server here.
+                console.log(token);
+                document.querySelector("#captchaToken").value = token;
+            });
+        });
+    }
+
+</script>
